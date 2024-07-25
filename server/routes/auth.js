@@ -34,7 +34,7 @@ const { email, password } = req.body;
     jwt.sign(
       payload,
       process.env.JWT_SECRET, // Use an environment variable
-      { expiresIn: '1h' },
+      { expiresIn: 100 },
       (err, token) => {
 		console.log(token)
         if (err) throw err;
