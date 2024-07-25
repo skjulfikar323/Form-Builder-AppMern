@@ -1,30 +1,57 @@
 const router = require("express").Router();
 const { User } = require("../models/user");
-const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const Joi = require("joi");
 
 router.post("/", async (req, res) => {
-	try {
-		const { error } = validate(req.body);
+
+const { email, password } = req.body;
+
+  try {
+	const { error } = validate(req.body);
 		if (error)
 			return res.status(400).send({ message: error.details[0].message });
 
-		const user = await User.findOne({ email: req.body.email });
-		if (!user)
-			return res.status(401).send({ message: "Invalid Email or Password" });
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: 'Invalid Credentials' });
+    }
 
-		const validPassword = await bcrypt.compare(
-			req.body.password,
-			user.password
-		);
-		if (!validPassword)
-			return res.status(401).send({ message: "Invalid Email or Password" });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      console.log(isMatch)
+      return res.status(400).json({ msg: 'Invalid Credentials' });
+    }
+      
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+	console.log(payload)
+	const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+	console.log(token)
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET, // Use an environment variable
+      { expiresIn: 360000 },
+      (err, token) => {
+		console.log(token)
+        if (err) throw err;
+        res.json({user, token });
+      }
+    );
 
-		const token = user.generateAuthToken();
-		res.status(200).send({ data: token, message: "logged in successfully" });
-	} catch (error) {
+	// const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+	// console.log(token)
+    // res.json({ token });
+
+  }catch (error) {
 		res.status(500).send({ message: "Internal Server Error" });
 	}
+	console.log(req.body)
+	
 });
 
 const validate = (data) => {

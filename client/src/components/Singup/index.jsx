@@ -5,10 +5,10 @@ import styles from "./styles.module.css";
 
 const Signup = () => {
 	const [data, setData] = useState({
-		firstName: "",
-		lastName: "",
+		username: "",
 		email: "",
 		password: "",
+		confrim_password: "",
 	});
 	const [error, setError] = useState("");
 	const navigate = useNavigate();
@@ -48,17 +48,16 @@ const Signup = () => {
 				</div>
 				<div className={styles.right}>
 					<form className={styles.form_container} onSubmit={handleSubmit}>
-						<h1>Create Account</h1>
 						<input
 							type="text"
-							placeholder="First Name"
-							name="firstName"
+							placeholder="Enter a username"
+							name="username"
 							onChange={handleChange}
-							value={data.firstName}
+							value={data.username}
 							required
 							className={styles.input}
 						/>
-						<input
+						{/* <input
 							type="text"
 							placeholder="Last Name"
 							name="lastName"
@@ -66,10 +65,10 @@ const Signup = () => {
 							value={data.lastName}
 							required
 							className={styles.input}
-						/>
+						/> */}
 						<input
 							type="email"
-							placeholder="Email"
+							placeholder="Enter your email"
 							name="email"
 							onChange={handleChange}
 							value={data.email}
@@ -78,10 +77,19 @@ const Signup = () => {
 						/>
 						<input
 							type="password"
-							placeholder="Password"
+							placeholder="Enter your password"
 							name="password"
 							onChange={handleChange}
 							value={data.password}
+							required
+							className={styles.input}
+						/>
+						<input
+							type="password"
+							placeholder="Enter your confirm password"
+							name="confrim_password"
+							onChange={handleChange}
+							value={data.confrim_password}
 							required
 							className={styles.input}
 						/>
