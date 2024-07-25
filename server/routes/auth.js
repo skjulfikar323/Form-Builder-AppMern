@@ -30,22 +30,17 @@ const { email, password } = req.body;
       },
     };
 	console.log(payload)
-	const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-	console.log(token)
+	//const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
     jwt.sign(
       payload,
       process.env.JWT_SECRET, // Use an environment variable
-      { expiresIn: 360000 },
+      { expiresIn: '1h' },
       (err, token) => {
 		console.log(token)
         if (err) throw err;
         res.json({user, token });
       }
     );
-
-	// const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-	// console.log(token)
-    // res.json({ token });
 
   }catch (error) {
 		res.status(500).send({ message: "Internal Server Error" });
